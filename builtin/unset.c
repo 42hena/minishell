@@ -6,7 +6,7 @@
 /*   By: hena <hena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 22:44:14 by hena              #+#    #+#             */
-/*   Updated: 2022/04/29 16:53:01 by hena             ###   ########.fr       */
+/*   Updated: 2022/04/29 16:55:22 by hena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	find_and_erase_key(char *str)
 	prev = head;	//전역 필요
 	while (copy)
 	{
-		if (!ft_strcmp(copy.key, str))
+		if (!ft_strcmp(envp->key, str))
 		{
 			prev->next = envp->next;
 			free(envp->key);
