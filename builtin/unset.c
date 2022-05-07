@@ -6,18 +6,23 @@
 /*   By: hena <hena@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 22:44:14 by hena              #+#    #+#             */
-/*   Updated: 2022/04/29 16:55:22 by hena             ###   ########.fr       */
+/*   Updated: 2022/05/06 03:35:08 by hena             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
+#include "check_string.util.h"
 
-typedef struct s_list
-{
- 	struct s_list *next;
- 	char *key;
- 	char *value;
-} t_list;
+#ifndef UNISTD
+# define UNISTD
+#include <unistd.h>
+#endif
+
+#ifndef BOOL
+# define BOOL
+
+# define TRUE 1
+# define FALSE 0
+#endif
 
 static int	ft_strcmp(const char *s1, const char *s2)
 {
@@ -35,33 +40,74 @@ static int	ft_strcmp(const char *s1, const char *s2)
 
 static void	find_and_erase_key(char *str)
 {
-	t_list	*envp;
+	t_list	*envpl;
 	t_list	*prev;
+	t_envp	*envp;
 
-	envp = head->next;// 전역 필요
-	prev = head;	//전역 필요
-	while (copy)
+	envpl = g_minishell.envp->next;	// 전역 필요
+	prev = g_minishell.envp;		//전역 필요
+	while (envpl)
 	{
+		envp = (t_envp *)envpl->data;
 		if (!ft_strcmp(envp->key, str))
 		{
-			prev->next = envp->next;
+			prev->next = envpl->next;
 			free(envp->key);
 			free(envp->value);
 			free(envp);
+			free(envpl);//? leak 체크 해야할듯
 			break ;
 		}
-		envp++;
-		prev++;
+		envpl = envpl->next;
+		prev = prev->next;
 	}
+}
+
+static int	is_valid_idenfier(char *str)
+{
+	if (!((is_small_alpha(*str) || is_big_alpha(*str) || *str == '_')))
+		return (FALSE);
+	while (*str)
+	{
+		if (!((is_small_alpha(*str) || is_big_alpha(*str) || \
+		is_integer(*str) || *str == '_')))
+			return (FALSE);
+		str++;
+	}
+	return (TRUE);
 }
 
 void	unset(char **argv)
 {
+	int	err_flag;
+
+	err_flag = 0;
 	argv++;
 	while (*argv)
 	{
-		find_and_erase_key(*argv);
+		if (!is_valid_idenfier(*argv))
+		{
+			write(2, "unset: `", 8);
+			write(2, *argv, ft_strlen(*argv));
+			write(2, "': not a valid identifier\n", 26);
+			err_flag = 1;
+		}
+		else
+			find_and_erase_key(*argv);
 		argv++;
 	}
-	// exit 코드
+	if (err_flag)
+		g_minishell.status = 1;
+	else
+		g_minishell.status = 0;
 }
+
+#ifndef MAIN
+#define MAIN
+
+int main(int argc, char **argv, char **envp)
+{
+	unset(argv);
+}
+
+#endif
