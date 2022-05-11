@@ -15,6 +15,6 @@
 
 int	is_small_alpha(char ch);
 int	is_big_alpha(char ch);
-int	is_integer(char ch);
+int	is_digit(char ch);
 
 #endif
