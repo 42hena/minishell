@@ -13,14 +13,15 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 
 #ifndef FD_OPTION
-#define FD_OPTION
-#define READ 0
-#define WRITE 1
-#define STDIN 0
-#define STDOUT 1
-#define STDERR 2
+# define FD_OPTION
+# define READ 0
+# define WRITE 1
+# define STDIN 0
+# define STDOUT 1
+# define STDERR 2
 #endif
 
 /*
@@ -31,34 +32,40 @@
  * redirect > 
  */
 
-void	output(char *filename)
+void	output(char *filename, int dup_fd)
 {
-	int	fd;
+	int	file_descriptor;
 
-	fd = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
-	if (fd < 0)
+	file_descriptor = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
+	if (file_descriptor < 0)
 	{
-		printf("bash: %s: %s\n", filename, strerrpr(errno));
+		printf("bash: %s: %s\n", filename, strerrpr(errno)); //write로 바꿔야 하는지
 		exit(errno);
 	}
-	dup2(fd, STDOUT);
-	close(fd);
+	if (dup_fd != 1)
+		dup2(file_descriptor, STDOUT);
+	else
+		dup2(file_descriptor, dup_fd);
+	close(file_descriptor);
 }
 
 /*
  * redirect >>
  */
 
-void	output_append(char *filename)
+void	output_append(char *filename, int dup_fd)
 {
-	int	fd;
+	int	file_descriptor;
 
-	fd = open(filename, O_CREAT | O_APPEND | O_RDWR, 0644);
-	if (fd < 0)
+	file_descriptor = open(filename, O_CREAT | O_APPEND | O_RDWR, 0644);
+	if (file_descriptor < 0)
 	{
-		printf("bash: %s: %s\n", filename, strerrpr(errno));
+		printf("bash: %s: %s\n", filename, strerror(errno));
 		exit(errno);
 	}
-	dup2(fd, STDOUT);
-	close(fd);
+	if (file_descriptor != 0)
+		dup2(file_descriptor, STDOUT);
+	else
+		dup2(file_descriptor, dup_fd);
+	close(file_descriptor);
 }

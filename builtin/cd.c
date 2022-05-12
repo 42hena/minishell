@@ -6,40 +6,111 @@
 #define FALSE 0
 char *OLDPWD;
 
-int check_option(char *str)
+int	check_option(char *str)
 {
-	if (!strncmp(str, "-P", 2) || !strcmp(str, "-L", 2))
+	if (!strncmp(str, "-P", 2) || !strncmp(str, "-L", 2)) // 함수 만들어서 바꿔야 함
 		return (TRUE);
 	return (FALSE);
 }
 
-void cd(char *argv[])
+void	using_environment_value(void)
+{
+	int flag;
+	t_list	*envpl;
+	t_envp	*envp;
+	char	*path;
+
+	path = NULL;
+	flag = 0;
+	envpl = g_minishell.envp->next;
+	while (envpl)
+	{
+		envp = (t_envp *)envpl->data;
+		if (!ft_strcmp(envp->key, "HOME"))
+		{
+			path = envp->value;
+			flag = 1;
+			break ;
+		}
+		envpl = envpl->next;
+	}
+	if (!path && !flag)
+		write(2, "bash: cd: HOME not set\n", 23);
+}
+
+void	non_using_environment_value(void)
+{
+	chdir("/Users/hena");
+}	//바꿔야할 듯
+
+int home_check(char *argv[])
+{
+	if (!*argv)
+	{
+		using_environment_value();
+		return (TRUE);
+	}
+	if (ft_strcmp("~", *argv))
+	{
+		non_using_environment_value();
+		return (TRUE);
+	}
+	return (FALSE);
+}
+
+void old_pwd()
+{
+	int	flag;
+	t_list	*envpl;
+	t_envp	*envp;
+	char	*path;
+
+	flag = 0;
+	envpl = g_minishell.envp->next;
+	while (envpl)
+	{
+		envp = (t_envp *)envpl->data;
+		if (!ft_strcmp(envp->key, "OLDPWD") && envp->value)
+		{
+			path = envpl->value;// 바뀔 위치
+			envpl->value = getcwd(NULL, 256);// 현재 위치
+			flag = 1;
+			chdir(path);
+			free(path);
+			break ;
+		}
+		envpl = envpl->next;
+	}
+	if (!path && !flag)
+		write(2, "bash: cd: OLDPWD not set\n", 25);
+}
+
+void	cd(char **argv)
 {
 	int state;
+	char *prev;
 
-	if (check_option(argv[0]))
+	argv++;
+	if (home_check(argv))
+		return ;
+	if (check_option(*argv))
 	{
-		printf("option HI\n");
+		printf("option 이 있음\n");
+		exit(1);
+	}
+	if (!strcmp(*argv, "-"))
+	{
+		printf("OLD PATH 실행\n");
+		old_pwd();
 		return ;
 	}
-	// -
-	if (!strcmp(argv[0], "-"))
-		printf("OLD PATH");
-		
-
-	// --
-	state = chdir(str);
+	prev = getcwd(NULL, 256);
+	state = chdir(*argv);
 	if (!state)
-		printf("success");
+	{
+		printf("success\n");
+	}
 	else
 		printf("-bash: cd: directory: No such file or directory\n");
 	printf("\n%s\n", getcwd(NULL, 100));
-}
-
-// - --어떻게 처리할건지 juhur님이랑 의견 나누기
-//
-int main(int argc, char *argv[])
-{
-	char * str[] = {"--", NULL};
-	cd(str);
 }

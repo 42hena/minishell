@@ -32,10 +32,10 @@ void	ft_env(char **argv)
 	if (*argv)
 	{
 		write(2, "env is only read one argument\n", 30);
-		exit(0); /// ? 뭘로 처리하냐 ㅋㅋㅋㅋㅋㅠ.ㅠ
+		exit(1); /// ? 뭘로 처리하냐 ㅋㅋㅋㅋㅋㅠ.ㅠ
 	}
 	// g_state.envpl; 연결리스트
-	envpl = g_minishell.envp;
+	envpl = g_minishell.envp->next;
 	while (envpl)
 	{
 		envp = (t_envp *)envpl->data;

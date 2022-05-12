@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "stdio.h": "c",
+        "locale": "c",
+        "string": "c",
+        "signal.h": "c",
+        "iterator": "c",
+        "test.h": "c"
+    }
+}

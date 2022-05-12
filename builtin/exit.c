@@ -5,7 +5,6 @@
 *	exit 1 2 3 exit: too many arguments exit 출력
 *	exit 1 a b exit: too many arguments exit 출력
 *	exit a b c : numeric argument required
-*
 */
 
 void	ft_exit_execute(char **argv, int pipeflag)
@@ -14,8 +13,8 @@ void	ft_exit_execute(char **argv, int pipeflag)
 	// 숫자라면
 	if (check_all_integer(*argv))
 	{
-		if (pipe_flag)
-			write(1, "exit\n", 5);
+		// if (pipe_flag)
+		// 	write(1, "exit\n", 5);
 		ret = ft_atoi(*argv);
 		argv++;
 		if (*argv)
@@ -39,8 +38,7 @@ void	ft_exit(char **argv, int pipeflag)
 	{
 		if (pipeflag)
 			write(1, "exit\n", 5);
-		// 번호도 삽입해야함
-		exit(0);
+		exit(0);	// 
 	}
 	else
 		ft_exit_execute(argv, pipeflag);

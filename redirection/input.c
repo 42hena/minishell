@@ -13,36 +13,24 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-#define READ 0
-#define WRITE 1
-#define STDIN 0
-#define STDOUT 1
-#define STDERR 2
-#endif
-
-void	redirect_input(char *filename, int heredoc_flag)
+void	redirect_input(char *filename, int dup_fd, int count)
 {
 	int	fd;
 	int	ret;
 
-	if (access(filename, F_OK))
-	{
-		// file 이름 넣어줄 방법 생각하기
-		write(2, "bash: file: No such file or directory\n", 38);
-		return ;//?? 찾아보기
-	}
-	if (access(filename, R_OK))
-	{
-		write(2, "bash: permission denied\n", 24);
-		return ;//??
-	}
-	fd = open(filename, O_RDWR);
+	
+
+	if (count == 1)
+		//	gnl(1)대입
+		;
+	
+	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
-		printf("bash: %s: %s\n", filename, strerror(errno));
-		exit(errno);
+		write(2, "bash: permission denied\n", 24);
+		
 	}
-	if (!heredoc_flag)
-		dup2(fd, 0);
+	// write(2, "bash: file: No such file or directory\n", 38);
+	dup2(fd, dup_fd);
 	close(fd);
 }

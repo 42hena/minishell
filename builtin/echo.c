@@ -2,69 +2,72 @@
 #include <stdlib.h>
 #include <string.h>
 // strcmp함수 만들어야 함
-
+#ifndef BOOL
+#define BOOL
 #define TRUE 1
 #define FALSE 0
+#endif
 
-static void	print_echo(char *argv[], int index, int flag)
+static void	print_echo(char *str)
 {
-	while (argv[index])
-	{
-		printf("%s", argv[index]);
-		index++;
-	}
-	if (!flag)
-		printf("\n");
+	printf("%s", str);
 }
 
-/*
- *	전부 해석되서 왔다는 전재로 함
- *	NULL로 끝내야 될거 같습니다. ㅠㅠ 죄송합니다.
- */
-
-
-// -n까지는 찾음
-static int	check_option(char *str)
+static int	check_option(char *str, int *opt)
 {
 	int	i;
 
+	if (!(str[0] == '-' && str[1] == 'n'))
+	{
+		return (FALSE);
+	}
 	i = 2;
 	while (str[i])
 	{
 		if (str[i] != 'n')
+		{
 			return (FALSE);
+		}
 		++i;
 	}
+	*opt = 1;
 	return (TRUE);
-}
+}	
 
-static void	ft_echo(char *argv[])
+static void	init_valuable(int *c_flag, int *o_flag)
 {
-	int		opt_flag;
-	int		index;
-
-	if (argv[0] == NULL)
-	{
-		printf("\n");
-		return ;
-	}
-	index = 0;
-	opt_flag = 0;
-	if (!strncmp(argv[0], "-n", 2))// NULL일 경우 한번 생각해보기
-	{
-		if (check_option(argv[0]))
-		{
-			opt_flag = 1;
-			index++;
-		}
-	}
-	print_echo(argv, index, opt_flag);
+	*c_flag = 0;
+	*o_flag = 0;
 }
 
-// echo NULL이거 어케 처리 할거임?
-// test시 여기에 해보심 될 듯
+void	ft_echo(char *argv[])
+{
+	int		check_flag;
+	int		opt_flag;
+
+	// init
+	init_valuable(&check_flag, &opt_flag);
+	// echo 건너뛰기
+	argv++;
+	// 옵션인거 싹다 무시
+	while (*argv && !check_flag)
+	{
+		if (!check_option(*argv, &opt_flag))
+			break ;
+		argv++;
+	}
+
+	while (*argv)
+	{
+		printf("%s", *argv);
+		argv++;
+	}
+	if (!opt_flag)
+		printf("\n");
+}
+
 int main()
 {
-	char *str[] = { NULL};
+	char *str[] = {"echo", "-n", "-nnn","a",    NULL};
 	ft_echo(str);
 }

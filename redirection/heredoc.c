@@ -30,16 +30,19 @@ static int	ft_strlen(char *str)
 
 static void	check_file_exist(char **filename)
 {
-	int	count = 0;
 	char *tmpfile;
+	int	size;
 
+	size = ft_strlen(filename);
+	tmpfile = (char *)malloc(sizeof(char) * size + 1);
+	strcpy(tmpfile, filename);
 	while (!access(*filename, F_OK))
 	{
-		int size = ft_strlen(*filename);
-		free(*filename);
-		*filename = (char *)malloc(sizeof(char) * size + 2);
-		filename[size + 1] = 0;
-		strcat(*filename, "0");
+		size = ft_strlen(*filename);
+		free(*filename);// 부가적인거
+		realloc(*filename, sizeof(char) * size + 1);
+		filename[size] = 0;
+		strcat(*filename, "");
 	}
 	printf("now file name: %s\n", *filename);
 }
@@ -55,21 +58,21 @@ void redirect_heredoc(char *end_string, char **filename)
 	// fd 에러 필요해 보임
 	if (fd < 0)
 		exit(0);
-	/*
-	while (!strcmp(end_string, readline))
-		write(fd, buf, strlen(buf));
-	*/
 	close(fd);
 }
 
-int main()
+void	here_doc(int index, int count)
 {
-	char *filename;
-	
-	filename = (char *)malloc(sizeof(char) * 9);
-	filename[8] = 0;
-	strcpy(filename, "donghyki");
-	
-	redirect_heredoc("end", &filename);
-}
+	t_heredoc	*iter;
+	int			fd;
+	int			i;
 
+	i = -1;
+	iter = g_minishell.heredoc;
+	while (++i < index)
+		iter = iter->next;
+	fd = open(iter->filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	if (count == 1)
+		//	gnl(255)대입
+		;
+}
