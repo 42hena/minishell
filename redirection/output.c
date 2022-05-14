@@ -42,10 +42,7 @@ void	output(char *filename, int dup_fd)
 		printf("bash: %s: %s\n", filename, strerrpr(errno)); //write로 바꿔야 하는지
 		exit(errno);
 	}
-	if (dup_fd != 1)
-		dup2(file_descriptor, STDOUT);
-	else
-		dup2(file_descriptor, dup_fd);
+	dup2(file_descriptor, dup_fd);
 	close(file_descriptor);
 }
 
@@ -63,9 +60,6 @@ void	output_append(char *filename, int dup_fd)
 		printf("bash: %s: %s\n", filename, strerror(errno));
 		exit(errno);
 	}
-	if (file_descriptor != 0)
-		dup2(file_descriptor, STDOUT);
-	else
-		dup2(file_descriptor, dup_fd);
+	dup2(file_descriptor, dup_fd);
 	close(file_descriptor);
 }
