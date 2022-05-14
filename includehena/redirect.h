@@ -17,7 +17,7 @@
  *input.c
  */
 
-void	redirect_input(char *filename, int dup_fd, int count);
+void	input(char *filename, int dup_fd);
 
 /*
  *output.c
@@ -31,11 +31,5 @@ void	output_append(char *filename, int dup_fd);
  */
 
 void	here_doc(int index, int dup_fd);
-
-/*
- *  heredoc_input.c
- */
-
-int	run_heredoc(t_list *heredoc);
 
 #endif

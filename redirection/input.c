@@ -12,25 +12,20 @@
 
 #include <stdio.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
 
-void	redirect_input(char *filename, int dup_fd, int count)
+void	input(char *filename, int dup_fd)
 {
 	int	fd;
 	int	ret;
 
-	
-
-	if (count == 1)
-		//	gnl(1)대입
-		;
-	
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 	{
 		write(2, "bash: permission denied\n", 24);
-		
+		exit(1);
 	}
-	// write(2, "bash: file: No such file or directory\n", 38);
 	dup2(fd, dup_fd);
 	close(fd);
 }
