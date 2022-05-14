@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include "../includehena/test.h"
 /*
 임시 파일을 이용한 here_doc 처리
 	1.	O_WRONLY, O_CREAT, O_TRUNC 모드 및 0644 권한으로 임시 파일 생성
@@ -18,16 +19,9 @@
  * file 유무 확인
  */
 
-static int	ft_strlen(char *str)
-{
-	int	i;
+extern t_minishell g_minishell;
 
-	i = 0;
-	while (str[i])
-		++i;
-	return (i);
-}
-
+/*
 static void	check_file_exist(char **filename)
 {
 	char *tmpfile;
@@ -45,9 +39,10 @@ static void	check_file_exist(char **filename)
 		strcat(*filename, "");
 	}
 	printf("now file name: %s\n", *filename);
-}
+}*/
 
 //임시 파일 이름좀 파싱해주셈 ㅠㅠ
+/*
 void redirect_heredoc(char *end_string, char **filename)
 {
 	int fd;
@@ -57,9 +52,9 @@ void redirect_heredoc(char *end_string, char **filename)
 	printf("now fd%d\n", fd);
 	// fd 에러 필요해 보임
 	if (fd < 0)
-		exit(0);
+		exit(1);
 	close(fd);
-}
+}*/
 
 void	here_doc(int index, int count)
 {
@@ -71,8 +66,9 @@ void	here_doc(int index, int count)
 	iter = g_minishell.heredoc;
 	while (++i < index)
 		iter = iter->next;
-	fd = open(iter->filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-	if (count == 1)
-		//	gnl(255)대입
-		;
+	fd = open(iter->file_name, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	if (fd < 0)
+		exit(1);
+	dup2(fd, 0);
+	close(fd);
 }
