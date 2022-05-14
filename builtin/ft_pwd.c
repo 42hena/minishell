@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../includehena/test.h"
-#include "../libft/libft.h"
+// #include "../libft/libft.h"
 #define TRUE 1
 #define FALSE 0
 
@@ -51,20 +51,23 @@ void	ft_pwd(t_exec *data, int pipe_flag)
 
 	argv = data->argv;
 	argv++;
-	if (!argv && check_option(argv))
+	if (!argv && check_option(*argv))
 	{
-		ft_putendl_fd(2, "option T.T\n");
+		// TODO:: ft_putendl_fd() 함수가 없으므로 헤더 추가하고 주석 풀어야 함
+		// ft_putendl_fd(2, "option T.T\n");
 		exit(1);
 	}
 	now_path = NULL;
 	now_path = getcwd(NULL, 256);
 	if (now_path == NULL)
 	{
-		ft_putendl_fd("fail getcwd()\n", 2);
+		// TODO:: ft_putendl_fd() 함수가 없으므로 헤더 추가하고 주석 풀어야 함
+		// ft_putendl_fd("fail getcwd()\n", 2);
 		exit(1);
 		// exit(errno);// 숫자 어케할건지
 	} 
-	ft_putendl_fd(now_path, 1);
+	// TODO:: ft_putendl_fd() 함수가 없으므로 헤더 추가하고 주석 풀어야 함
+	// ft_putendl_fd(now_path, 1);
 	g_minishell.state = 0;
 	free(now_path);
 	if (pipe_flag)

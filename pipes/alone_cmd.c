@@ -1,6 +1,7 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h> //// TODO:: 헤더 삭제 해야함.
 #include "../includehena/test.h"
 #include "../includehena/built_in.h"
 #include "../includehena/redirect.h"
@@ -24,6 +25,7 @@ static void	excute_cmd(t_exec *data)
 	}
 }
 
+//TODO:: 나중에 strcmp를 ft_strcmp로 고치고 헤더 추가해야 함
 static void	select_cmd(t_exec *data)
 {
 	// if (!ft_strcmp(data->argv[0], "cd"))
@@ -38,9 +40,9 @@ static void	select_cmd(t_exec *data)
 	// 	ft_cd(data, 0);
 	// else if (!ft_strcmp(data->argv[0], "cd"))
 	// 	ft_cd(data, 0);
-	// if (!ft_strcmp(data->argv[0], "cd"))
-	// 	ft_pwd(data, 0);
-	// else
+	if (!strcmp(data->argv[0], "pwd"))
+		ft_pwd(data, 0);
+	else
 		excute_cmd(data);
 }
 
