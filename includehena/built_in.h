@@ -14,4 +14,8 @@ void	ft_pwd(t_exec *data, int pipe_flag);
 
 void	ft_unset(t_exec	*data, int pipe_flag);
 
+/*
+ *  ft_env.c file
+ */
+void	ft_env(t_exec *data, int pipe_flag);
 #endif
