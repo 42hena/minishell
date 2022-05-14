@@ -42,7 +42,7 @@ static void	pipe_logic(t_list *parse)
 	if (!parse->next)
 	{
 		start_setting();
-		// tree_traversal_alone(execl->root, execl);
+		tree_traversal_alone(execl->root, execl);
 		end_setting();
 	}
 	// else ()	//파이프가 있을 때
