@@ -14,6 +14,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <string.h>
+#include <stdlib.h>
 
 #ifndef FD_OPTION
 # define FD_OPTION
@@ -32,6 +34,18 @@
  * redirect > 
  */
 
+static void	print_error(char *filename)
+{
+	char	*err_message;
+
+	err_message = strerror(errno);
+	write(2, "bash: ", 6);
+	write(2, filename, strlen(filename)); //TODO:: strlen -> ft_strlen 넣어야 함
+	write(2, ": ", 2);
+	write(2, err_message, strlen(err_message));
+	write(2, "\n", 1);
+}
+
 void	output(char *filename, int dup_fd)
 {
 	int	file_descriptor;
@@ -39,8 +53,8 @@ void	output(char *filename, int dup_fd)
 	file_descriptor = open(filename, O_CREAT | O_TRUNC | O_RDWR, 0644);
 	if (file_descriptor < 0)
 	{
-		printf("bash: %s: %s\n", filename, strerrpr(errno)); //write로 바꿔야 하는지
-		exit(errno);
+		print_error(filename);
+		exit(1); // TODO:: exit 값 확인하기
 	}
 	dup2(file_descriptor, dup_fd);
 	close(file_descriptor);
@@ -57,8 +71,8 @@ void	output_append(char *filename, int dup_fd)
 	file_descriptor = open(filename, O_CREAT | O_APPEND | O_RDWR, 0644);
 	if (file_descriptor < 0)
 	{
-		printf("bash: %s: %s\n", filename, strerror(errno));
-		exit(errno);
+		print_error(filename);
+		exit(1); // TODO:: exit 값 확인하기
 	}
 	dup2(file_descriptor, dup_fd);
 	close(file_descriptor);

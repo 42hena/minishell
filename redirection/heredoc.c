@@ -14,7 +14,7 @@ void	here_doc(int index, int dup_fd)
 	int			i;
 
 	i = -1;
-	iter = g_minishell.heredoc;
+	iter = (t_heredoc *)g_minishell.heredoc;
 	while (++i < index)
 		iter = iter->next;
 	fd = open(iter->file_name, O_CREAT | O_RDWR | O_TRUNC, 0644);

@@ -10,33 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includehena/check_string.util.h"
-
-#ifndef UNISTD
-# define UNISTD
-#include <unistd.h>
-#endif
-
+#include "../includehena/check_string_util.h"
+#include "../includehena/test.h"
+#include <string.h> //TODO:: 삭제해야 함
 #ifndef BOOL
 # define BOOL
 
 # define TRUE 1
 # define FALSE 0
-#endif
 
-// static int	ft_strcmp(const char *s1, const char *s2)
-// {
-// 	while (*s1 == *s2 && *s1 != '\0' && *s2 != '\0')
-// 	{
-// 		s1++;
-// 		s2++;
-// 	}
-// 	return ((unsigned char)*s1 - (unsigned char)*s2);
-// }
+#endif
 
 /*
  * headnode 필요할듯 요청
  */
+
+extern t_minishell g_minishell;
 
 static void	find_and_erase_key(char *str)
 {
@@ -55,7 +44,7 @@ static void	find_and_erase_key(char *str)
 			free(envp->key);
 			free(envp->value);
 			free(envp);
-			free(envpl);//? leak 체크 해야할듯
+			free(envpl);//TODO:: leak 체크 해야할듯
 			break ;
 		}
 		envpl = envpl->next;
@@ -77,9 +66,17 @@ static int	is_valid_idenfier(char *str)
 	return (TRUE);
 }
 
-void	unset(t_exec	*data)
+static void	unset_error_print(char *argv)
 {
-	int	err_flag;
+	write(2, "unset: `", 8);
+	write(2, *argv, strlen(*argv)); //TODO:: strlen ->ft_strlen
+	write(2, "': not a valid identifier\n", 26);
+}
+
+void	ft_unset(t_exec	*data, int pipe_flag)
+{
+	int		err_flag;
+	char	**argv;
 
 	err_flag = 0;
 	argv++;
@@ -87,27 +84,14 @@ void	unset(t_exec	*data)
 	{
 		if (!is_valid_idenfier(*argv))
 		{
-			write(2, "unset: `", 8);
-			write(2, *argv, ft_strlen(*argv));
-			write(2, "': not a valid identifier\n", 26);
+			unset_error_print(*argv);
 			err_flag = 1;
 		}
 		else
 			find_and_erase_key(*argv);
 		argv++;
 	}
-	if (err_flag)
-		g_minishell.status = 1;
-	else
-		g_minishell.status = 0;
+	g_minishell.state = 0;
+	if (pipe_flag)
+		exit(0);
 }
-
-#ifndef MAIN
-#define MAIN
-
-int main(int argc, char **argv, char **envp)
-{
-	unset(argv);
-}
-
-#endif
