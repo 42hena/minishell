@@ -38,10 +38,11 @@ static void	select_cmd(t_exec *data)
 	// 	ft_cd(data, 0);
 	// else if (!ft_strcmp(data->argv[0], "cd"))
 	// 	ft_cd(data, 0);
-	// else if (!ft_strcmp(data->argv[0], "cd"))
-	// 	ft_cd(data, 0);
+	
 	if (!strcmp(data->argv[0], "pwd"))
 		ft_pwd(data, 0);
+	else if (!strcmp(data->argv[0], "unset"))
+		ft_unset(data, 0);
 	else
 		excute_cmd(data);
 }

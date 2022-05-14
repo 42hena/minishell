@@ -4,10 +4,14 @@
 // 지워야 할듯
 #include "./test.h"
 /*
- *  pwd.c file
+ *  ft_pwd.c file
  */
 void	ft_pwd(t_exec *data, int pipe_flag);
 
+/*
+ *  ft_unset.c file
+ */
 
+void	ft_unset(t_exec	*data, int pipe_flag);
 
 #endif
