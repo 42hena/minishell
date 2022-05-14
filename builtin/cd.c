@@ -85,12 +85,13 @@ void old_pwd()
 		write(2, "bash: cd: OLDPWD not set\n", 25);
 }
 
-void	cd(char **argv)
+void	ft_cd(t_exec *data)
 {
 	int state;
 	char *prev;
-
-	argv++;
+	char **argv;
+	// data->/argv++;
+	data = argv;
 	if (home_check(argv))
 		return ;
 	if (check_option(*argv))
@@ -113,4 +114,9 @@ void	cd(char **argv)
 	else
 		printf("-bash: cd: directory: No such file or directory\n");
 	printf("\n%s\n", getcwd(NULL, 100));
+}
+
+int main()
+{
+	
 }

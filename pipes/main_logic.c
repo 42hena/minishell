@@ -14,6 +14,7 @@
 #define FALSE 0
 #include "../includehena/test.h"
 #include "../includehena/redirect.h"
+#include "../includehena/excute_cmd.h"
 #include <unistd.h>
 
 t_minishell g_minishell;
@@ -33,20 +34,20 @@ static void	end_setting()
 	close(255);
 }
 
-// static void	pipe_logic(t_list *parse)
-// {
-// 	t_exec	*execl;
+static void	pipe_logic(t_list *parse)
+{
+	t_exec	*execl;
 
-// 	execl = (t_exec *)parse->data;
-// 	if (!parse->next)
-//	{
-//		start_setting();
-// 		alone_cmd();
-//		end_setting();
-//	}
-// 	// else ()	//파이프가 있을 때
-// 	// 	fork_pipe(parse);
-// }
+	execl = (t_exec *)parse->data;
+	if (!parse->next)
+	{
+		start_setting();
+		// tree_traversal_alone(execl->root, execl);
+		end_setting();
+	}
+	// else ()	//파이프가 있을 때
+	// 	fork_pipe(parse);
+}
 
 int	main_logic()
 {

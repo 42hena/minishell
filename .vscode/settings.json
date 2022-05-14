@@ -5,6 +5,10 @@
         "string": "c",
         "signal.h": "c",
         "iterator": "c",
-        "test.h": "c"
+        "test.h": "c",
+        "array": "c",
+        "string_view": "c",
+        "vector": "c",
+        "unistd.h": "c"
     }
 }

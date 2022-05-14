@@ -11,6 +11,10 @@
 /* ************************************************************************** */
 
 #include <signal.h>
+#include <stdlib.h>
+#include "../includehena/test.h"
+
+extern t_minishell g_minishell;
 
 void	sig_heredoc_handler(int signal)
 {
@@ -21,6 +25,6 @@ void	sig_heredoc_handler(int signal)
 		exit(1);
 	rl_replace_line("", 1);
 	rl_redisplay();
-	g_minishell.flag = 1;
+	g_minishell.is_ended = 1;
 	g_minishell.state = 1;
 }

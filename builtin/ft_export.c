@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <unistd.h>
-
+#include "../includehena/test.h"
 #ifndef BOOL
 # define BOOL
 
 # define TRUE 1
 # define FALSE 0
 #endif
+
+extern t_minishell g_minishell;
 
 static void	ft_print_export(char *key, char *value)
 {
@@ -33,7 +35,7 @@ static void	show_export_list(void)
 		ft_print_env(envp->key, envp->value);
 		envpl++;
 	}
-	g_state.status = 0;
+	g_minishell.state = 0;
 }
 
 int	is_in_equal(char *str)

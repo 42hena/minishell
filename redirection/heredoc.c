@@ -7,7 +7,7 @@
 
 extern t_minishell g_minishell;
 
-void	here_doc(int index, int count)
+void	here_doc(int index, int dup_fd)
 {
 	t_heredoc	*iter;
 	int			fd;
@@ -20,6 +20,6 @@ void	here_doc(int index, int count)
 	fd = open(iter->file_name, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	if (fd < 0)
 		exit(1);
-	dup2(fd, 0);
+	dup2(fd, dup_fd);
 	close(fd);
 }

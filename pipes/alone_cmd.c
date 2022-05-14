@@ -1,87 +1,77 @@
-#ifndef ERASE
-# define ERASE
+#include "../includehena/test.h"
+#include "../includehena/built_in.h"
+#include "../includehena/redirect.h"
 
-typedef enum e_node_type
-{
-	TYPE_IN_OVERWRITE,
-	TYPE_OUT_OVERWRITE,
-	TYPE_HEREDOC,
-	TYPE_OUT_APPEND,
-	TYPE_CMD,
-	TYPE_ETC
-}				t_node_type;
+extern t_minishell g_minishell;
 
-typedef struct s_node
-{
-	struct s_node	*left;
-	struct s_node	*right;
-	t_node_type		type;
-	char			*data;
-}				t_node;
-
-typedef struct s_ast
-{
-	struct s_node	*root;
-}				t_ast;
-#endif
-
-void	excute_cmd(char **argv)
+static void	excute_cmd(t_exec *data)
 {
 	int	pid;
 
 	pid = fork();
 	if (pid < 0)
-		printf("error\n");
+		exit(1);
 	else if (pid == 0)
-		execve(cmd, argv, envpa);
+		execve(data->cmd_address, data->argv, g_minishell.envp);
+	else
+		wait(0);
 }
 
-static void	tree_traversal(t_node *tree, int *input_cnt)
+static void	select_cmd(t_exec *data)
+{
+	// if (!ft_strcmp(data->argv[0], "cd"))
+	// 	ft_cd(data);
+	// else if (!ft_strcmp(data->argv[0], "cd"))
+	// 	ft_cd(data);
+	// else if (!ft_strcmp(data->argv[0], "cd"))
+	// 	ft_cd(data, 0);
+	// else if (!ft_strcmp(data->argv[0], "cd"))
+	// 	ft_cd(data, 0);
+	// else if (!ft_strcmp(data->argv[0], "cd"))
+	// 	ft_cd(data, 0);
+	// else if (!ft_strcmp(data->argv[0], "cd"))
+	// 	ft_cd(data, 0);
+	if (!ft_strcmp(data->argv[0], "cd"))
+		ft_pwd(data, 0);
+	else
+		excute_cmd(data);
+}
+
+void	tree_traversal_alone(t_node *tree, t_exec *data)
 {
 	if (!tree)
 		return ;
 	if (tree->type == TYPE_IN_OVERWRITE) //  <
-	{
-		input(tree->right->data, 3);
-		*input_cnt--;
-	}
+		input(tree->right->file_name, 0);
 	else if (tree->type == TYPE_OUT_OVERWRITE) // >
-		output(tree->right->data, 4);
+		output(tree->right->file_name, 1);
 	else if (tree->type == TYPE_HEREDOC) // <<
-	{	
-		
-		*input_cnt--;
-	}
+		here_doc(tree->right->heredoc_idx, 0);
 	else if (tree->type == TYPE_OUT_APPEND) // >>
-		output_append(tree->right->data, 4);
+		output_append(tree->right->file_name, 1);
 	else if (tree->type == TYPE_CMD)
-	{
-		close(255);
-		
-		close(3);
-		close(4);
-	}
-	tree_traversal(tree->left);
+		select_cmd(data);
+	tree_traversal_alone(tree->left, data);
 }
 
-int	get_input_count(t_node *iter)
-{
-	int	cnt;
+// int	get_input_count(t_node *iter)
+// {
+// 	int	cnt;
 
-	cnt = 0;
-	while (iter)
-	{
-		if (iter->data == TYPE_IN_OVERWRITE
-			|| iter->data == TYPE_HEREDOC)
-			cnt++;
-	}
-	return (cnt);
-}
+// 	cnt = 0;
+// 	while (iter)
+// 	{
+// 		if (iter->file_name == TYPE_IN_OVERWRITE
+// 			|| iter->file_name == TYPE_HEREDOC)
+// 			cnt++;
+// 		iter = iter->left;
+// 	}
+// 	return (cnt);
+// }
 
-void	alone_cmd(t_list *link)
-{
-	int cnt;
-
-	cnt = get_input_count(((t_node)link->data)->root);
-	tree_traversal(((t_node)link->data)->root, &cnt);
-}
+// void	alone_cmd(t_exec *data)
+// {
+// 	// int cnt;
+// 	// cnt = get_input_count(data->root);
+// 	tree_traversal_alone(data->root, data);
+// }

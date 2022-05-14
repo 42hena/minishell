@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "check_string.util.h"
+#include "../includehena/check_string.util.h"
 
 #ifndef UNISTD
 # define UNISTD
@@ -24,15 +24,15 @@
 # define FALSE 0
 #endif
 
-static int	ft_strcmp(const char *s1, const char *s2)
-{
-	while (*s1 == *s2 && *s1 != '\0' && *s2 != '\0')
-	{
-		s1++;
-		s2++;
-	}
-	return ((unsigned char)*s1 - (unsigned char)*s2);
-}
+// static int	ft_strcmp(const char *s1, const char *s2)
+// {
+// 	while (*s1 == *s2 && *s1 != '\0' && *s2 != '\0')
+// 	{
+// 		s1++;
+// 		s2++;
+// 	}
+// 	return ((unsigned char)*s1 - (unsigned char)*s2);
+// }
 
 /*
  * headnode 필요할듯 요청
@@ -77,7 +77,7 @@ static int	is_valid_idenfier(char *str)
 	return (TRUE);
 }
 
-void	unset(char **argv)
+void	unset(t_exec	*data)
 {
 	int	err_flag;
 

@@ -12,7 +12,7 @@
 
 #ifndef REDIRECT_H
 # define REDIRECT_H
-
+#include "../includehena/test.h"
 /*
  *input.c
  */
@@ -25,5 +25,17 @@ void	redirect_input(char *filename, int dup_fd, int count);
 
 void	output(char *filename, int dup_fd);
 void	output_append(char *filename, int dup_fd);
+
+/*
+ *  heredoc.c
+ */
+
+void	here_doc(int index, int dup_fd);
+
+/*
+ *  heredoc_input.c
+ */
+
+int	run_heredoc(t_list *heredoc);
 
 #endif

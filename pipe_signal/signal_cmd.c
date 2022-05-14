@@ -11,12 +11,15 @@
 /* ************************************************************************** */
 
 #include <signal.h>
+#include "../includehena/test.h"
+
+extern t_minishell g_minishell;
 
 void	sig_cmd_int_handler(int signal)
 {
 	if (signal != SIGINT)
 		return ;
-	g_minishell.flag = 1;
+	g_minishell.is_ended = 1;
 	g_minishell.state = 130;
 }
 
@@ -25,6 +28,6 @@ void	sig_cmd_quit_handler(int signal)
 	if (signal != SIGQUIT)
 		return ;
 	write(2, "Quit: 3\n", 8);
-	g_minishell.flag = 1;
+	g_minishell.is_ended = 1;
 	g_minishell.state = 131;
 }

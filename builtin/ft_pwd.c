@@ -49,9 +49,9 @@ void	ft_pwd(t_exec *data, int pipe_flag)
 	int		ret;
 	char	**argv;
 
-	argv = data;
+	argv = data->argv;
 	argv++;
-	if (!(argv + 1) && check_option(argv + 1))
+	if (!argv && check_option(argv))
 	{
 		ft_putendl_fd(2, "option T.T\n");
 		exit(1);
@@ -66,7 +66,7 @@ void	ft_pwd(t_exec *data, int pipe_flag)
 	} 
 	ft_putendl_fd(now_path, 1);
 	g_minishell.state = 0;
+	free(now_path);
 	if (pipe_flag)
 		exit(0);
-	free(now_path);
 }
