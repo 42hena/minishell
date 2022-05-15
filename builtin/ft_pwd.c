@@ -7,27 +7,6 @@
 #define TRUE 1
 #define FALSE 0
 
-/* 지워야할 친구들
-static size_t ft_strlen(char *str)
-{
-	int i;
-	
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
-
-static void	ft_putendl_fd(char *s, int fd)
-{
-	size_t	len;
-
-	len = ft_strlen(s);
-	write(fd, s, len);
-	write(fd, "\n", 1);
-}
-*/
-
 /*
  *	option 무시이므로 뒤에 와도 무시할 예정
  *	pipe_flag : pipe exist
