@@ -1,17 +1,13 @@
 #include <stdio.h> // test
 #include <stdlib.h>
 #include <string.h>
+#include "../includehena/test.h"
 // strcmp함수 만들어야 함
 #ifndef BOOL
 #define BOOL
 #define TRUE 1
 #define FALSE 0
 #endif
-
-static void	print_echo(char *str)
-{
-	printf("%s", str);
-}
 
 static int	check_option(char *str, int *opt)
 {
@@ -40,11 +36,13 @@ static void	init_valuable(int *c_flag, int *o_flag)
 	*o_flag = 0;
 }
 
-void	ft_echo(char *argv[])
+void	ft_echo(t_exec *data, int pipe_flag)
 {
 	int		check_flag;
 	int		opt_flag;
+	char	**argv;
 
+	argv = data->argv;
 	// init
 	init_valuable(&check_flag, &opt_flag);
 	// echo 건너뛰기
@@ -56,7 +54,6 @@ void	ft_echo(char *argv[])
 			break ;
 		argv++;
 	}
-
 	while (*argv)
 	{
 		printf("%s", *argv);
@@ -64,4 +61,6 @@ void	ft_echo(char *argv[])
 	}
 	if (!opt_flag)
 		printf("\n");
+	if (pipe_flag)
+		exit(0);
 }
