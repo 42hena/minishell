@@ -56,6 +56,7 @@ typedef struct s_minishell {
 	t_list		*heredoc;
 	int			is_ended;
 	unsigned short	state;
+	char		*oldpwd;
 } t_minishell;
 
 typedef struct s_envp
