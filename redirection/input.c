@@ -15,6 +15,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+
+//TODO:: open말고 다른 방법 확인
 void	input(char *filename, int dup_fd)
 {
 	int	fd;

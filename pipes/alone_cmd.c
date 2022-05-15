@@ -34,13 +34,13 @@ static void	select_cmd(t_exec *data)
 	// 	ft_cd(data);
 	// else if (!ft_strcmp(data->argv[0], "cd"))
 	// 	ft_cd(data, 0);
-	// else if (!ft_strcmp(data->argv[0], "cd"))
-	// 	ft_cd(data, 0);
-	if (!strcmp(data->argv[0], "env"))
+	if (!strcmp(data->cmd, "echo"))
+		ft_echo(data, 1);
+	else if (!strcmp(data->cmd, "env"))
 		ft_env(data, 0);
-	else if (!strcmp(data->argv[0], "pwd"))
+	else if (!strcmp(data->cmd, "pwd"))
 		ft_pwd(data, 0);
-	else if (!strcmp(data->argv[0], "unset"))
+	else if (!strcmp(data->cmd, "unset"))
 		ft_unset(data, 0);
 	else
 		excute_alone_cmd(data);
@@ -49,14 +49,14 @@ static void	select_cmd(t_exec *data)
 //TODO:: 나중에 strcmp를 ft_strcmp로 고치고 헤더 추가해야 함
 static void	select_multiple_cmd(t_exec *data)
 {
-	// if (!ft_strcmp(data->argv[0], "cd"))
+	// if (!ft_strcmp(data->cmd, "cd"))
 	// 	ft_cd(data);
-	// else if (!ft_strcmp(data->argv[0], "cd"))
+	// else if (!ft_strcmp(data->cmd, "cd"))
 	// 	ft_cd(data);
-	// else if (!ft_strcmp(data->argv[0], "cd"))
+	// else if (!ft_strcmp(data->cmd, "cd"))
 	// 	ft_cd(data, 0);
-	if (!ft_strcmp(data->cmd, "echo"))
-		ft_echo(data, 0);
+	if (!strcmp(data->cmd, "echo"))
+		ft_echo(data, 1);
 	else if (!strcmp(data->cmd, "env"))
 		ft_env(data, 1);
 	else if (!strcmp(data->cmd, "pwd"))

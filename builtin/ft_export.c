@@ -140,11 +140,14 @@ int	divide_argv(char **argv)
 	return (err_flag);
 }
 
-void	export(char **argv)
+void	export(t_exec *data)
 {
+	char	**argv;
+
+	argv = data->argv;
 	argv++;
 	if (!*argv)
 		show_export_list();
-	else
-		divide_argv(argv);
+	// else						TODO:: 다시 만들어야 할 듯.
+	// 	divide_argv(argv);
 }
