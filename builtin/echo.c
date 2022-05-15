@@ -65,9 +65,3 @@ void	ft_echo(char *argv[])
 	if (!opt_flag)
 		printf("\n");
 }
-
-int main()
-{
-	char *str[] = {"echo", "-n", "-nnn","a",    NULL};
-	ft_echo(str);
-}

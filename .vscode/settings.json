@@ -9,6 +9,9 @@
         "array": "c",
         "string_view": "c",
         "vector": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "__bit_reference": "c",
+        "__string": "c",
+        "algorithm": "c"
     }
 }

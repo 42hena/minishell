@@ -3,153 +3,170 @@
 #include <stdlib.h>
 #include <string.h>
 
-int status;
-struct link
+typedef struct s_list
 {
-	struct link *next;
-	char *cmd;
-	char **argv;
-	int pid;
-	int prev_readpipe_fd;
-	//tree 필요
-};
+	struct s_list  *next;
+	void           *data;
+} t_list;
 
-void	change_connection_pipe_parent(struct link *cmd, int *p)
+int status;
+typedef struct link
 {
-	close(p[1]); // write close
-	if (cmd->prev_readpipe_fd != 0)
+	int     pid;          // 0
+	int    fd;           // 0
+	char   *cmd;         // "echo"
+	char    *cmd_address; // "/bin/ls"
+	char    **argv;       // {"echo", ("option"), ("arg"), ("arg"), NULL}
+	//tree 필요
+}				t_exec;
+
+// extern t_minishell g_minishell;
+
+void	change_connection_pipe_parent(t_list *cmd, int *p)
+{
+	t_exec	*exec;
+
+	exec = (t_exec *)cmd->data;
+	close(p[1]); 					// write close
+	if (exec->fd != 0)
 	{
 		dup2(p[0], 3);
 		close(p[0]);
 	}
 }
 
-void	change_connection_pipe_child(struct link *cmd, int *p)
+void	change_connection_pipe_child(t_list *cmd, int *p)
 {
-	close(p[0]); // read close 현재꺼 닫기	
+	t_exec	*exec;
+
+	exec = (t_exec *)cmd->data;
+	close(p[0]); 					// read close 현재꺼 닫기	
 	if (cmd->next)
 		dup2(p[1], 1);
 	close(p[1]);
-	if (cmd->prev_readpipe_fd)
+	if (exec->fd)
 	{
-		dup2(cmd->prev_readpipe_fd, 0);
-		close(cmd->prev_readpipe_fd);
+		dup2(exec->fd, 0);
+		close(exec->fd);
 	}
 }
 
 /*
  * 다시 생각해야할 듯
  */
-void	wait_all_child(struct link *head)
+void	wait_all_child(t_list *head)
 {
 	int	pid;
 	int	wpid;
-	struct link *copy;
+	t_list *copy;
 	int	cnt;
 	int tmp;
-	/*printf("pid[%d]\n", head->next->pid);	
-	waitpid(head->next->pid, &status, 0);
-	printf("[%d]\n", status);
-*/
+
 	cnt = 0;
 	copy = head;
 	while (copy->next)
 	{
 		cnt++;
 		copy = copy->next;
-		wpid = copy->pid;
+		wpid = ((t_exec *)copy->data)->pid;
+		// wpid = copy->pid;
 	}
 	while (head)
 	{
 		pid = wait(&status);
 		if (pid == wpid)
-			tmp = status;
+			tmp = status; //TODO 전역변수랑 연결, 값 확인 필요
 		head = head->next;
 	}
-	printf("%d %d %d\n", pid, wpid, status);
+	// printf("%d %d %d\n", pid, wpid, status);
 }
 
 void	fork_pipe(t_list *link, char **envp)
 {
 	int	p[2];
 	t_list	*head;
+	t_exec	*exec;
 
 	head = link;
-	if (!link->next)
-	{
-		alone_cmd(link);
-		return ;
-	}
 	while (link)
 	{
 		pipe(p);
-		link->pid = fork();
-		if (link->pid < 0)
+		exec = (t_exec *)link->data;
+		exec->pid = fork();
+		// printf("pid[%d]\n", exec->pid);				//각 노드별로 pid체크 용도 test 
+		if (exec->pid < 0)
 			exit(0);
-		else if (link->pid > 0)
+		else if (exec->pid > 0)
 			change_connection_pipe_parent(link, p);
 		else
 		{
 			change_connection_pipe_child(link, p);
-			execve(link->cmd, link->argv, envp);
+			// TODO:: execve 대신 트리 순회로 바꿔야 함.
+			execve(exec->cmd_address, exec->argv, envp);// TODO:: 트리 순회 필요할 듯
 		}
 		if (link->next)
-			link->next->prev_readpipe_fd = 3;
+			((t_exec *)link->next->data)->fd = 3;
 		link = link->next;
 	}
 	close(3);
 	wait_all_child(head);
 }
 
-/* test 로직
-struct link *init_link()
+#if 0 // test용도 코드
+t_list *init_link()
 {
-	struct link *cmd;
+	t_list *cmd;
 	
-	cmd = (struct link*)malloc(sizeof(struct link));
+	cmd = (t_list *)malloc(sizeof(t_list));
 	cmd->next = NULL;
-	cmd->cmd = NULL;
-	cmd->argv = 0;
-	cmd->prev_readpipe_fd = 0;
-	
+	cmd->data = NULL;
 	return cmd;
 }
 
+t_exec *init_exec()
+{
+	t_exec *cmd;
+	
+	cmd = (t_exec *)malloc(sizeof(t_exec));
+	cmd->cmd = NULL;
+	cmd->cmd_address = NULL;
+	cmd->fd = 0;
+	cmd->pid = 0;
+	return cmd;
+}
+
+
 int main(int argc, char **argv, char **envp)
 {
-	struct link *new;
-	struct link *head;
-	
+	t_list *new;
+	t_list *head;
+	t_exec *data;
+
 	new = init_link();
-	
 	head = new;
-	new->cmd =(char *)malloc(sizeof(char) * 12);
-	new->cmd = strcpy(new->cmd, "/bin/cat");
-	
-	//printf("%s", new->cmd);
-	
-	new->argv = (char **)malloc(sizeof(char *) * 3);
-	new->argv[0] = (char *)malloc(sizeof(char) * 4);
-	strcpy(new->argv[0], "cat");
-	//printf("%s", new->argv[0]);
+	data = init_exec();
+	// printf("%s %s", head->data, head->next);
+	new->data = (void *)data;
+	data->cmd = strdup("cat");
+	data->cmd_address = strdup("/bin/cat");
+	data->argv = (char **)malloc(sizeof(char *) * 3);
+	data->argv[0] = strdup("cat");
+	data->argv[1] = NULL;
 
-	//new->argv[1] = (char *)malloc(sizeof(char) * 4);
-	//strcpy(new->argv[1], "100");
-	new->argv[1] = NULL;
-
+	
+	
 	new = init_link();
+	
+	data = init_exec();
+	new->data = (void *)data;
+	data->cmd = strdup("ls");
+	data->cmd_address = strdup("/bin/ls");
 
-	head->next = new;
-	new->cmd =(char *)malloc(sizeof(char) * 8);
-	new->cmd = strcpy(new->cmd, "/bin/ls");
-	new->argv = (char **)malloc(sizeof(char*) * 3);
-	new->argv[0] = (char *)malloc(sizeof(char) * 5);
-	strcpy(new->argv[0], "ls");
-	//new->argv[1] = (char *)malloc(sizeof(char) * 5);
-	//strcpy(new->argv[1], "HOME");
-	/*new->argv[2] = (char *)malloc(sizeof(char) * 6);
-	strcpy(new->argv[2], "hello");
-	new->argv[1] = NULL;
+	data->argv = (char **)malloc(sizeof(char *) * 3);
+	data->argv[0] = strdup("ls");
+	data->argv[1] = NULL;
+	head->next = new;	
 
-	fork_pipe(head, envp);
-}*/
+	fork_pipe(head, envp); // g_minishell envp가져와야 할듯? 2차원 배열
+}
+#endif
