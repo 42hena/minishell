@@ -2,7 +2,9 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../includehena/test.h"
 
+#if 0
 typedef struct s_list
 {
 	struct s_list  *next;
@@ -19,8 +21,9 @@ typedef struct link
 	char    **argv;       // {"echo", ("option"), ("arg"), ("arg"), NULL}
 	//tree 필요
 }				t_exec;
+#endif
 
-// extern t_minishell g_minishell;
+extern t_minishell g_minishell;
 
 void	change_connection_pipe_parent(t_list *cmd, int *p)
 {
@@ -54,28 +57,17 @@ void	change_connection_pipe_child(t_list *cmd, int *p)
 /*
  * 다시 생각해야할 듯
  */
-void	wait_all_child(t_list *head)
+void	wait_all_child(t_list *head, int last_pid)
 {
 	int	pid;
-	int	wpid;
-	t_list *copy;
-	int	cnt;
 	int tmp;
+	int state;
 
-	cnt = 0;
-	copy = head;
-	while (copy->next)
-	{
-		cnt++;
-		copy = copy->next;
-		wpid = ((t_exec *)copy->data)->pid;
-		// wpid = copy->pid;
-	}
 	while (head)
 	{
-		pid = wait(&status);
-		if (pid == wpid)
-			tmp = status; //TODO 전역변수랑 연결, 값 확인 필요
+		pid = wait(&state);
+		if (pid == last_pid)
+			g_minishell.state = state; //TODO 전역변수랑 연결, 값 확인 필요
 		head = head->next;
 	}
 	// printf("%d %d %d\n", pid, wpid, status);
@@ -86,6 +78,7 @@ void	fork_pipe(t_list *link, char **envp)
 	int	p[2];
 	t_list	*head;
 	t_exec	*exec;
+	int		last_pid;
 
 	head = link;
 	while (link)
@@ -107,9 +100,10 @@ void	fork_pipe(t_list *link, char **envp)
 		if (link->next)
 			((t_exec *)link->next->data)->fd = 3;
 		link = link->next;
+		last_pid = exec->pid;
 	}
 	close(3);
-	wait_all_child(head);
+	wait_all_child(head, last_pid);
 }
 
 #if 0 // test용도 코드

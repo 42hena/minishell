@@ -17,8 +17,8 @@
 #include "../includehena/excute_cmd.h"
 #include <unistd.h>
 
-t_minishell g_minishell;
-// extern t_minishell g_minishell;
+// t_minishell g_minishell;
+extern t_minishell g_minishell;
 
 static void	start_setting()
 {
@@ -57,15 +57,12 @@ int	main_logic()
 	heredoc = g_minishell.heredoc;
 	exec = g_minishell.exec;
 	start_setting();
+	
+	// readline 인클루드 못해서 확인 불가	TODO:: 확인해야 함
 	// if (!run_heredoc(heredoc)) 		// heredoc 실패 시 종료임 아니면 내가 말고?. free해줄지 체크
 	// 	return (FALSE);
 	// 헤더 있는지 확인해야할듯
 	pipe_logic(exec);
 	end_setting();
 	return (TRUE);
-}
-
-int main()
-{
-	return 0;
 }
