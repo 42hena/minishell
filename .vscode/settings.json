@@ -12,6 +12,7 @@
         "unistd.h": "c",
         "__bit_reference": "c",
         "__string": "c",
-        "algorithm": "c"
+        "algorithm": "c",
+        "built_in.h": "c"
     }
 }

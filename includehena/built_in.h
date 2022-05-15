@@ -18,4 +18,19 @@ void	ft_unset(t_exec	*data, int pipe_flag);
  *  ft_env.c file
  */
 void	ft_env(t_exec *data, int pipe_flag);
+
+/*
+ *  ft_exit.c file
+ */
+void	ft_exit(t_exec *data, int pipeflag);
+
+
+/*
+ *  ft_exit_util.c file
+ */
+int	ft_atoi(char *str);
+int	check_all_integer(char *str);
+void	print_exit_error(char *str, int type);
+unsigned char	calculate_exit_number(int exit_num);
+
 #endif

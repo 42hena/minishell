@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 #ifndef BOOL
 #define BOOL
 
@@ -22,10 +24,10 @@
 #ifndef EXITKIND
 #define EXITKIND
 
-#define NUMBER 0
-#define NUMBERSIZE 27
-#define MANYARGU 1
+#define MANYARGU 0
 #define MANYARGUSIZE 25
+#define NUMBER 1
+#define NUMBERSIZE 27
 
 #endif
 
@@ -38,24 +40,24 @@ unsigned char	calculate_exit_number(int exit_num)
 	return exit_num;
 }
 
-int	ft_strlen(char *str)
-{
-	int i;
-
-	while (*str)
-		++i;
-	return (i);
-}
-
 void	print_exit_error(char *str, int type)
 {
-	write(1, "exit\n", 5); // 확인해봐야할듯 pipe 유무에 따라
-	write(2, str, ft_strlen(str));
-	write(2, ": ", 2);
+	write(2, "bash: ", 6);
+	write(2, "exit: ", 6);
+	
+	
 	if (type == NUMBER)
+	{
+		write(2, str, strlen(str));
+		write(2, ": ", 2);
 		write(2, "numeric argument required\n", NUMBERSIZE);
+		exit(255);
+	}
 	else if (type == MANYARGU)
+	{
 		write(2, "too many arguments exit\n", MANYARGUSIZE);
+		exit(1);
+	}
 }
 
 int	check_all_integer(char *str)
@@ -86,7 +88,7 @@ int	ft_atoi(char *str)
 	}
 	while (*str)
 	{
-		sum = sum * 10 + *str - '0';
+		sum = sum * 10 + (*str - '0');
 		str++;
 	}
 	return (sum);
