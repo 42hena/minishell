@@ -115,8 +115,3 @@ void	ft_cd(t_exec *data)
 		printf("-bash: cd: directory: No such file or directory\n");
 	printf("\n%s\n", getcwd(NULL, 100));
 }
-
-int main()
-{
-	
-}

@@ -25,7 +25,7 @@
 #define NUMBER 0
 #define NUMBERSIZE 27
 #define MANYARGU 1
-#define MANUARGUSIZE 25
+#define MANYARGUSIZE 25
 
 #endif
 
